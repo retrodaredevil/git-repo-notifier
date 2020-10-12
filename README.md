@@ -8,3 +8,11 @@ When you clone a repository, if it is private, you should do something like this
 git clone git@private-repo-asdf.git --config core.sshCommand="ssh -i ~/Programming/git-repo-notifier/my_ssh_key"
 ```
 Thanks https://stackoverflow.com/a/59074070/5434860
+
+#### Installing requirements:
+```
+python3 -m pip install -r requirements.txt
+```
+
+### Setting up slack app
+Add `chat:write` and `chat:write.public` as Bot Token Scopes

@@ -5,11 +5,17 @@ import time
 
 from typing import List
 
-from git import Repo, Git
+from git import Repo
+from slack import WebClient
 
 
 def main(args: List[str]) -> int:
     repo = Repo(args[0])
+
+    slack_token = args[1]
+    slack_channel = args[2]
+
+    client = WebClient(token=slack_token)
 
     origin = repo.remotes.origin
 
@@ -25,7 +31,7 @@ def main(args: List[str]) -> int:
 
         author = commit.author
         message = commit.message.strip()
-        print(f"{author} committed {commit_id}: {message}")
+        client.chat_postMessage(channel=slack_channel, text=f"{author} committed {commit_id}: {message}")
         time.sleep(10)
 
     return 0

@@ -2,10 +2,12 @@
 
 import sys
 import time
+from datetime import datetime
+from traceback import print_exc
 
 from typing import List
 
-from git import Repo
+from git import Repo, GitCommandError
 from slack import WebClient
 
 
@@ -21,7 +23,16 @@ def main(args: List[str]) -> int:
 
     last_commit = None
     while True:
-        origin.pull()
+        try:
+            origin.pull()
+        except GitCommandError as e:
+            print(datetime.now())
+            print_exc(e)
+            print(f"Got error. Going to continue after waiting 30 seconds")
+            print()
+            time.sleep(30)
+            continue
+
         commit = repo.head.commit
         commit_id = str(commit)
         if last_commit is None or last_commit == commit_id:
@@ -31,8 +42,12 @@ def main(args: List[str]) -> int:
 
         author = commit.author
         message = commit.message.strip()
-        client.chat_postMessage(channel=slack_channel, text=f"{author} committed {commit_id}: {message}")
-        time.sleep(10)
+        text = f"{author} committed {commit_id}: {message}"
+        print(datetime.now())
+        print(text)
+        print()
+        client.chat_postMessage(channel=slack_channel, text=text)
+        time.sleep(30)
 
     return 0
 

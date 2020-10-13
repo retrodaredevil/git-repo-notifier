@@ -25,9 +25,9 @@ def main(args: List[str]) -> int:
     while True:
         try:
             origin.pull()
-        except GitCommandError as e:
+        except GitCommandError:
             print(datetime.now())
-            print_exc(e)
+            print_exc(file=sys.stdout)
             print(f"Got error. Going to continue after waiting 30 seconds")
             print()
             time.sleep(30)
